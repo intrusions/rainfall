@@ -1,19 +1,4 @@
-## Step 1: Searching for Files
-
-```bash
-$ ls -la
--rwsr-x---+ 1 level1 users  747441 Mar  6  2016 level0
-```
-
----
-## Step 2: Transfer the binary to our local machine
-
-```bash
-$ scp -P 4242 level0@machine_ip:/home/user/level0/level0 .
-```
-
----
-## Step 3: Reverse Engineering the Binary with Ghidra
+## Step 1: Static analysis
 
 ```c
 undefined4 main(undefined4 param_1,int param_2)
@@ -48,7 +33,7 @@ undefined4 main(undefined4 param_1,int param_2)
 4. Finally, it executes the shell with execv("/bin/sh",&local_20).
 5. If the argument isn’t 423, it prints "No !" and exits.
 
-## Step 4: Get the pass
+## Step 2: Get the pass
 We can just execute the binary with `423` as only arguments.
 
 ```bash
