@@ -1,6 +1,6 @@
 ## Step 1: Static analysis
 
-```asm
+```c
 08048444  int32_t run()
 08048444  {
 0804846d      fwrite("Good... Wait what?\n", 1, 0x13, stdout);
@@ -8,7 +8,7 @@
 08048444  }
 ```
 
-```asm
+```c
 08048480  int32_t main(int32_t argc, char** argv, char** envp)
 08048480  {
 08048496      void buf;
