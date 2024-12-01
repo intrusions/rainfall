@@ -45,7 +45,7 @@ This introduces a `format string vulnerability` because `printf()` interprets fo
 The variable `m` (located at `0x0804988c`) is checked. If it equals `64`, the program executes a shell using `system("/bin/sh")`.
 If not, it simply returns the value of `m`.
 
-The printf call in `v()` allowing us to write `64` to the memory address of `m` (`0x0804988c`).
+The `printf()` call in `v()` allowing us to write `64` to the memory address of `m` (`0x0804988c`).
 1. Begin the payload with the address of `m` (`0x0804988c`) in little-endian format: `\x8c\x98\x04\x08`.
 2. Pad the payload with `60` characters to ensure exactly `64` characters are written before `%n`.
 3. Use `%4$n` to specify that the 4th argument on the stack (our target address) should receive the value.
