@@ -1,4 +1,4 @@
-## Step 1: Static analysis
+## Step 1: Static & Dynamic Analysis
 
 ```c
 080484a4    uint32_t v()
@@ -39,7 +39,6 @@ Non-debugging symbols:
 ```
 
 ### Explanation
-
 `v()` reads user input into a buffer (`var_20c`) using `fgets()` and then passes it directly to `printf()`.
 This introduces a `format string vulnerability` because `printf()` interprets format specifiers if the input contains them.
 The variable `m` (located at `0x0804988c`) is checked. If it equals `64`, the program executes a shell using `system("/bin/sh")`.

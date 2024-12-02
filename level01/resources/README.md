@@ -1,4 +1,4 @@
-## Step 1: Static analysis
+## Step 1: Static & Dynamic Analysis
 
 ```c
 08048444  int32_t run()
@@ -17,7 +17,6 @@
 ```
 
 ### Explanation
-
 The goal is to overwrite the return address in the stack with the address of the `run()` function (`0x08048444`), causing the program to execute the shell.
 
 1. Determine the buffer size:

@@ -1,4 +1,5 @@
-## Step 1: Static Analysis
+## Step 1: Static & Dynamic Analysis
+
 ```c
 080484a4    void o() __noreturn
 080484a4    {

@@ -1,4 +1,4 @@
-## Step 1: Static analysis
+## Step 1: Static & Dynamic Analysis
 
 ```c
 undefined4 main(undefined4 param_1,int param_2)
@@ -42,6 +42,3 @@ $ ./level0 423
 % cat ../level1/.pass
 1fe8a524fa4bec01ca4ea2a869af2a02260d4a7d5fe7e7c24d8617e6dca12d3a
 ```
----
-
-And there you have it, the token is `1fe8a524fa4bec01ca4ea2a869af2a02260d4a7d5fe7e7c24d8617e6dca12d3a`.
