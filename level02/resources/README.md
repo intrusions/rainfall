@@ -31,6 +31,7 @@ After this, it checks if the copy of the `eip` (`unaff_retaddr`) on the `stack` 
 The program checks this because it typically indicates an attempt to execute code in restricted memory regions, such as the stack or shared libraries.
 
 If the check passes, it prints the buffer using `puts()` and creates a copy of the buffer on the `heap` using `strdup()`.
+
 ```
 (gdb) info proc map                
 process 3548
@@ -52,9 +53,9 @@ Mapped address spaces:
         0xb7fff000 0xb8000000     0x1000    0x20000 /lib/i386-linux-gnu/ld-2.15.so
         0xbffdf000 0xc0000000    0x21000        0x0 [stack]
 ```
+
 To exploit the `buffer overflow`, the goal is to fill the buffer with `shellcode`, add padding to reach the `eip` copy, and overwrite it with the address of the shellcode's location in the `heap` before `strdup()` stores the buffer.
 When the `p()` function returns, the overwritten `eip` will cause execution to jump to the shellcode, spawning a shell.
-
 
 ## Step 2: Exploiting the Binary
 

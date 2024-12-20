@@ -27,6 +27,7 @@
 ```
 
 ### Explanation
+
 The program opens `/home/user/end/.pass` using `fopen()`. If the file cannot be opened or if the number of arguments is not two, it return with `-1`. A buffer (`buffer`) is initialized with null bytes and filled with the first `66` bytes from the file. The provided argument (`argv[1]`) is converted to an integer using `atoi()`, and a null byte is inserted into the buffer at this index.
 
 The next 65 bytes from the file are read into `buffer2`. The program compares the buffer to `argv[1]` using `strcmp()`. If they match, it executes `/bin/sh` else it prints the content of `buffer2`.

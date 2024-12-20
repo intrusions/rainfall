@@ -19,13 +19,14 @@
 ```
 
 ### Explanation
+
 The program begins by converting the first argument into an integer (`n`) using `atoi()` and then checks if `n > 9`. If this condition is true, the program return.
 
 Next, a buffer is created, and `memcpy()` copies data from the second argument (`argv[2]`) into this buffer. The size of the copied data is determined by `n << 2`, multiplying `n` by 4. The maximum value for `n` is 9, which results in `9 << 2` = `36 bytes` being copied.
 
 Finally, the program checks if `n == 1464814662`. If this condition is met, the program executes `/bin/sh`. This behavior presents a potential vulnerability if we can bypass the initial `n > 9` check and manipulate the value of `n`.
 
-```
+```bash
 (gdb) run 9 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 The program being debugged has been started already.
 Start it from the beginning? (y or n) Y

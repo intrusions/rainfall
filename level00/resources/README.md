@@ -28,13 +28,12 @@ undefined4 main(undefined4 param_1,int param_2)
 
 ### Explanation
 1. The program takes a single command-line argument and converts it to an integer using atoi.
-2. If the integer is 0x1a7 (423 in decimal), the program prepares to execute a shell (/bin/sh).
-3. It then sets the real and effective user/group IDs to the owner’s IDs using setresuid and setresgid.
-4. Finally, it executes the shell with execv("/bin/sh",&local_20).
-5. If the argument isn’t 423, it prints "No !" and exits.
+2. If the integer is `0x1a7` (`423` in decimal), the program prepares to execute a shell (`/bin/sh`).
+3. It then sets the real and effective user/group IDs to the owner’s IDs using `setresuid()` and `setresgid()`.
+4. Finally, it executes the shell with `execv("/bin/sh",&local_20)`.
+5. If the argument isn’t `423`, it prints "No !" and exits.
 
-## Step 2: Get the pass
-We can just execute the binary with `423` as only arguments.
+## Step 2: Exploiting the Binary
 
 ```bash
 $ ./level0 423

