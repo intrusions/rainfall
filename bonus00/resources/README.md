@@ -48,7 +48,7 @@
 The vulnerability in the binary comes from the lack of `NULL` terminated character when managing input buffers. 
 The function `p()` reads data from stdin into a buffer using `read()` without checking its inputs length. 
 The first 20 bytes are copied into the buffer however no NULL characters are set into the buffer if the size of the input is equal or greater than 20.
-Next the `pp()` function concatenates both buffers using `strcat()` but since the first buffer is not NULL terminated, `strcat()` will continue to read memory past `buff_arg1`, causing the buffer overflow.
+Next the `pp()` function concatenates both buffers using `strcat()` but since the first buffer is not `NULL` terminated, `strcat()` will continue to read memory past `buff_arg1`, causing the buffer overflow.
 To proceed, we are first going to fill the first buffer with 20 characters 'A' followed by the shellcode.
 
 ```bash
